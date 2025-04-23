@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>中1 英語 模擬テスト（解説＋和訳/英作文チェックリスト）</title>
+<style>
+ body{font-family:Segoe UI,Arial,Helvetica,sans-serif;margin:20px;line-height:1.6}
+ h1{color:#2c3e50}
+ h2{margin-top:1.4em;color:#2d6a96}
+ fieldset{border:1px solid #ccc;border-radius:6px;padding:10px 12px;margin-bottom:14px}
+ legend{font-weight:bold}
+ .q{margin:.4em 0;padding:4px;border-radius:4px}
+ .opt{display:block;margin:2px 0}
+ .correct{background:#e9f9e6}
+ .wrong{background:#fdeeee}
+ .explain{display:none;margin-top:6px;color:#d35400;white-space:pre-line}
+ textarea,input[type="text"]{width:96%}
+ #result{border-top:3px solid #2c3e50;margin-top:24px;padding-top:12px}
+ button{padding:6px 16px;margin:6px 4px;cursor:pointer}
+ .badge{display:inline-block;background:#3498db;color:#fff;border-radius:999px;padding:0 8px;font-size:.8em;margin-left:4px}
+ ul.check{margin:4px 0 0 1em;padding:0 0 0 1em}
+</style>
+</head>
+<body>
+
+<h1>中学1年 英語 模擬テスト（60分）</h1>
+<p>解き終えたら<strong>「採点」</strong>を押してください。<br>
+選択・記述 70点分は自動採点されます。<br>
+和訳・英作文は <em>模範解答＋チェックリスト</em> を見て自己訂正しましょう。</p>
+
+<form id="quiz">
+<!--------------- 大問 I --------------->
+<h2>Ⅰ. Vocabulary <span class="badge">20点</span></h2>
+<fieldset><legend>1–10</legend><div id="p1"></div></fieldset>
+
+<!--------------- 大問 II --------------->
+<h2>Ⅱ. Verb Forms <span class="badge">14点</span></h2>
+<div id="p2"></div>
+
+<!--------------- 大問 III --------------->
+<h2>Ⅲ. Word Order <span class="badge">10点</span></h2>
+<div id="p3"></div>
+
+<!--------------- 大問 IV --------------->
+<h2>Ⅳ. 和訳 <span class="badge">10点</span></h2>
+<p>模範解答ボタン → 解答例と「3つのチェックポイント」が表示されます。</p>
+<div id="p4"></div>
+
+<!--------------- 大問 V --------------->
+<h2>Ⅴ. 英作文 <span class="badge">20点</span></h2>
+<p>5語以上で書き、ボタンで答えとチェックリストを確認してください。</p>
+<div id="p5"></div>
+
+<!--------------- 大問 VI --------------->
+<h2>Ⅵ. Reading <span class="badge">30点</span></h2>
+<fieldset><legend>本文</legend>
+<p><strong>My Sunday</strong><br>
+I usually get up at seven on Sundays. After breakfast, I play basketball with my friends in the park for two hours. We enjoy the game very much. In the afternoon, I read books or watch movies at home. I like science-fiction movies best. I go to bed at ten.</p>
+</fieldset>
+
+<h3>(A) True / False</h3><div id="p6tf"></div>
+<h3>(B) Choose</h3><div id="p6mc"></div>
+<h3>(C) Short Answer</h3><div id="p6sa"></div>
+</form>
+
+<button id="gradeBtn" type="button">採点</button>
+<button type="button" onclick="location.reload()">リセット</button>
+
+<div id="result"></div>
+
+<script defer>
+/* -------- 問題＆解説＆チェックリスト -------- */
+const D={
+/* 大問 I */
+p1:[ /* 省略せず全10問 */ 
+ {q:'I (  ) breakfast at seven every day.',
+  a:['play','plays','playing','played'],ans:0,
+  tip:'I は3人称単数ではないので語尾に s は付けません。'},
+ {q:'This is (  ) orange.',
+  a:['a','an','the','some'],ans:1,
+  tip:'母音で始まる単語の前は an。'},
+ {q:'My sister is good (  ) music.',
+  a:['at','in','on','with'],ans:0,
+  tip:'good at ～「～が得意」セットで覚えよう。'},
+ {q:'(  ) you like cats?',
+  a:['Do','Are','Does','Is'],ans:0,
+  tip:'一般動詞 like → Do you～?'},
+ {q:'There (  ) a park near my house.',
+  a:['is','are','be','was'],ans:0,
+  tip:'park は1 つ→ is。'},
+ {q:'Ken (  ) to school by bike yesterday.',
+  a:['go','goes','went','going'],ans:2,
+  tip:'yesterday があるので過去形 went。'},
+ {q:'This bag is (  ). It belongs to Mary.',
+  a:['she','her','hers',"she's"],ans:2,
+  tip:'hers = her + bag で「彼女のもの」。'},
+ {q:'(  ) tall that tree is!',
+  a:['What','How','Which','When'],ans:1,
+  tip:'How + 形容詞! の感嘆文。'},
+ {q:'We have English on (  ).',
+  a:['Monday','cake','bus','green'],ans:0,
+  tip:'曜日の前は on。'},
+ {q:'Tom can swim (  ) than his brother.',
+  a:['fast','faster','fastest','more fast'],ans:1,
+  tip:'比較級 → faster。'}
+],
+
+/* 大問 II */
+p2:[
+ {jp:'私は毎朝6時に起きます。',key:'get',tip:'現在の習慣は現在形。'},
+ {jp:'彼らは今、図書館で勉強しています。',key:'are studying',tip:'今＝進行形: are + 動詞ing'},
+ {jp:'ケンは昨日その映画を見ました。',key:'watched',tip:'過去→ watch + ed'},
+ {jp:'母は車を運転しません。',key:"doesn't drive",tip:"三人称単数の否定は doesn't + 原形"},
+ {jp:'あなたはテニスをすることができますか。',key:'Can you play',tip:'Can + 主語 + 原形？'},
+ {jp:'来週京都へ行くつもりです。',key:'will go',tip:'未来は will + 原形'},
+ {jp:'雨が降っているので家にいましょう。',key:'is raining',tip:'天気 it + is + 動詞ing'}
+],
+
+/* 大問 III */
+p3:[
+ {jp:'これは私のペンです。',words:['is','this','my','pen','not'],
+  key:'This is my pen.',tip:'This is ～. の基本形。'},
+ {jp:'どこで昼ごはんを食べますか。',words:['lunch','do','eat','where','you'],
+  key:'Where do you eat lunch?',tip:'疑問詞 Where + do + 主語 + 動詞'},
+ {jp:'その小さな犬はとても速く走ります。',words:['dog','small','runs','the','very','fast'],
+  key:'The small dog runs very fast.',tip:'形容詞 small を名詞 dog の前へ。'},
+ {jp:'彼女は昨日英語の宿題をしませんでした。',words:['homework','did','she','English','not','do','yesterday'],
+  key:"She didn't do English homework yesterday.",tip:"過去否定は didn't + 原形"},
+ {jp:'私たちは日曜日にテニスをする予定です。',words:['will','on','play','Sunday','tennis','we'],
+  key:'We will play tennis on Sunday.',tip:'未来 will、曜日の前は on'}
+],
+
+/* 大問 IV：和訳 */
+p4:[
+ {en:'I have two younger brothers.',
+  jp:'私は2人の弟がいます。',
+  check:['「弟」があるか？','数「2人」があるか？','主語「私」があるか？']},
+ {en:'It is raining hard now.',
+  jp:'今、激しく雨が降っています。',
+  check:['主語 It が不要訳になっていないか','「激しく」が入っているか','時を表す「今」があるか']},
+ {en:'Can you help me with my homework?',
+  jp:'私の宿題を手伝ってくれますか。',
+  check:['尋ねている表現「～してくれますか？」になっているか',
+         '目的語「私の宿題」があるか',
+         '語尾に「か」や「？」があるか']},
+ {en:'There are many books on the desk.',
+  jp:'机の上にたくさんの本があります。',
+  check:['場所「机の上」が訳にあるか','数量「たくさん」があるか','主語を訳さず自然な日本語になっているか']},
+ {en:'Let’s go to the park after school.',
+  jp:'放課後に公園へ行きましょう。',
+  check:['「行きましょう」の勧誘表現か','「公園へ」があるか','「放課後に」があるか']}
+],
+
+/* 大問 V：英作文 */
+p5:[
+ {jp:'私の父は音楽が好きです。',en:'My father likes music.',
+  check:['主語 My father か？','動詞 likes に s があるか','語順 S-V-O になっているか']},
+ {jp:'あの山はとても高いです。',en:'That mountain is very high.',
+  check:['That mountain と書いたか','be動詞 is を使ったか','very を high の前に置いたか']},
+ {jp:'昨日あなたはどこにいましたか。',en:'Where were you yesterday?',
+  check:['疑問詞 Where が先頭か','be動詞 were を使ったか','yesterday が最後にあるか']},
+ {jp:'私は猫を2匹飼っています。',en:'I have two cats.',
+  check:['主語 I か','動詞 have か','two cats と複数形にしたか']},
+ {jp:'机の上に本がありますか。',en:'Is there a book on the desk?',
+  check:['Is there ～ ? の形か','a book 単数にしたか','on the desk があるか']},
+ {jp:'母は料理を作ることができます。',en:'My mother can cook meals.',
+  check:['主語 My mother か','助動詞 can を使ったか','cook meals と動詞原形+目的語になっているか']},
+ {jp:'私たちは来週テストがあります。',en:'We have a test next week.',
+  check:['主語 We か','have を使ったか','next week が文末にあるか']}
+],
+
+/* 大問 VI: Reading */
+read_tf:[
+ {s:'The writer gets up at eight on Sundays.',ans:false,
+  tip:'本文は seven と書かれています。'},
+ {s:'The writer plays basketball for two hours.',ans:true,
+  tip:'for two hours と一致しています。'},
+ {s:'The writer goes to bed at eleven.',ans:false,
+  tip:'本文では at ten とあります。'}
+],
+read_mc:{q:'What does the writer like best?',
+         opts:['Action movies','Science-fiction movies','Comedy movies','Horror movies'],
+         ans:1,
+         tip:'本文中 “I like science-fiction movies best.”'},
+read_sa:[
+ {q:'Where does the writer play basketball?',ans:'in the park',
+  tip:'本文 “in the park” とあります。'},
+ {q:'What time does the writer go to bed?',ans:'at ten',
+  tip:'本文 “at ten”。'}
+]
+};
+
+/* -------- 画面生成 -------- */
+const $=sel=>document.querySelector(sel);
+/* I */
+D.p1.forEach((o,i)=>{
+ $('#p1').insertAdjacentHTML('beforeend',
+  `<div class="q" id="q1_${i}">${i+1}. ${o.q}<br>`+
+  o.a.map((w,j)=>`<label class="opt"><input type="radio" name="p1${i}" value="${j}"> ${String.fromCharCode(65+j)} ${w}</label>`).join('')+
+  `<div class="explain"></div></div>`);
+});
+/* II */
+D.p2.forEach((o,i)=>{
+ $('#p2').insertAdjacentHTML('beforeend',
+  `<div class="q" id="q2_${i}">${11+i}. ${o.jp}<br><input type="text" name="p2${i}"><div class="explain"></div></div>`);
+});
+/* III */
+D.p3.forEach((o,i)=>{
+ $('#p3').insertAdjacentHTML('beforeend',
+  `<div class="q" id="q3_${i}">${18+i}. ${o.jp}<br>( ${o.words.join(' / ')} )<br>`+
+  `→ <input type="text" name="p3${i}" style="width:60%"><div class="explain"></div></div>`);
+});
+/* IV */
+D.p4.forEach((o,i)=>{
+ $('#p4').insertAdjacentHTML('beforeend',
+  `<div class="q">${23+i}. ${o.en}<br><textarea name="w${i}"></textarea><br>`+
+  `<button type="button" onclick="this.nextElementSibling.style.display='block'">模範解答・チェック</button>`+
+  `<div class="explain"><strong>模範例：</strong>${o.jp}<br><u>チェックリスト</u><ul class="check">`+
+  o.check.map(c=>`<li>${c}</li>`).join('')+
+  `</ul></div></div>`);
+});
+/* V */
+D.p5.forEach((o,i)=>{
+ $('#p5').insertAdjacentHTML('beforeend',
+  `<div class="q">${28+i}. ${o.jp}<br><textarea name="e${i}"></textarea><br>`+
+  `<button type="button" onclick="this.nextElementSibling.style.display='block'">模範解答・チェック</button>`+
+  `<div class="explain"><strong>模範例：</strong>${o.en}<br><u>チェックリスト</u><ul class="check">`+
+  o.check.map(c=>`<li>${c}</li>`).join('')+
+  `</ul></div></div>`);
+});
+/* VI TF */
+D.read_tf.forEach((o,i)=>{
+ $('#p6tf').insertAdjacentHTML('beforeend',
+  `${35+i}. ${o.s}<br>`+
+  `<label><input type="radio" name="tf${i}" value="T">T</label> `+
+  `<label><input type="radio" name="tf${i}" value="F">F</label>`+
+  `<div class="explain" id="tfex${i}"></div><br>`);
+});
+/* VI MC */
+$('#p6mc').innerHTML=`38. ${D.read_mc.q}<br>`+
+ D.read_mc.opts.map((w,j)=>`<label class="opt"><input type="radio" name="mc" value="${j}"> ${String.fromCharCode(65+j)} ${w}</label>`).join('')+
+ `<div class="explain" id="mcex"></div>`;
+/* VI SA */
+D.read_sa.forEach((o,i)=>{
+ $('#p6sa').insertAdjacentHTML('beforeend',
+  `${39+i}. ${o.q}<br><input type="text" name="sa${i}" style="width:60%"><div class="explain" id="saex${i}"></div><br>`);
+});
+
+/* -------- 採点 -------- */
+$('#gradeBtn').addEventListener('click',()=>{
+ let score=0,max=70,bad={};
+
+ /* I */
+ D.p1.forEach((o,i)=>{
+  const q=$(`#q1_${i}`),sel=document.querySelector(`input[name="p1${i}"]:checked`);
+  if(sel&&Number(sel.value)===o.ans){score+=2;q.classList.add('correct');}
+  else{bad['P1']=(bad['P1']||0)+1;q.classList.add('wrong');
+       q.querySelector('.explain').textContent=`正解：${o.a[o.ans]}\n解説：${o.tip}`;
+       q.querySelector('.explain').style.display='block';}
+ });
+ /* II */
+ D.p2.forEach((o,i)=>{
+  const q=$(`#q2_${i}`),
+        ans=document.querySelector(`input[name="p2${i}"]`).value.trim().toLowerCase();
+  if(ans===o.key.toLowerCase()){score+=2;q.classList.add('correct');}
+  else{bad['P2']=(bad['P2']||0)+1;q.classList.add('wrong');
+       q.querySelector('.explain').textContent=`正解：${o.key}\n解説：${o.tip}`;
+       q.querySelector('.explain').style.display='block';}
+ });
+ /* III */
+ D.p3.forEach((o,i)=>{
+  const q=$(`#q3_${i}`),
+        ans=document.querySelector(`input[name="p3${i}"]`).value.trim().replace(/\s+/g,' ');
+  if(ans.toLowerCase()===o.key.toLowerCase()){score+=2;q.classList.add('correct');}
+  else{bad['P3']=(bad['P3']||0)+1;q.classList.add('wrong');
+       q.querySelector('.explain').textContent=`正解：${o.key}\n解説：${o.tip}`;
+       q.querySelector('.explain').style.display='block';}
+ });
+
+ /* Reading TF */
+ D.read_tf.forEach((o,i)=>{
+  const sel=document.querySelector(`input[name="tf${i}"]:checked`),
+        ex=$(`#tfex${i}`);
+  if(sel&&((sel.value==='T')===o.ans)){score+=2;ex.parentNode.classList.add('correct');}
+  else{bad['Reading']=(bad['Reading']||0)+1;ex.parentNode.classList.add('wrong');
+       ex.textContent=`正解：${o.ans?'T':'F'}\n解説：${o.tip}`;ex.style.display='block';}
+ });
+ /* Reading MC */
+ const selmc=document.querySelector('input[name="mc"]:checked'),exmc=$('#mcex');
+ if(selmc&&Number(selmc.value)===D.read_mc.ans){score+=4;exmc.parentNode.classList.add('correct');}
+ else{bad['Reading']=(bad['Reading']||0)+1;exmc.parentNode.classList.add('wrong');
+      exmc.textContent=`正解：${D.read_mc.opts[D.read_mc.ans]}\n解説：${D.read_mc.tip}`;exmc.style.display='block';}
+ /* Reading SA */
+ D.read_sa.forEach((o,i)=>{
+  const ans=document.querySelector(`input[name="sa${i}"]`).value.trim().toLowerCase(),
+        ex=$(`#saex${i}`);
+  if(ans===o.ans){score+=10;ex.parentNode.classList.add('correct');}
+  else{bad['Reading']=(bad['Reading']||0)+1;ex.parentNode.classList.add('wrong');
+       ex.textContent=`正解：${o.ans}\n解説：${o.tip}`;ex.style.display='block';}
+ });
+
+ /* 結果 */
+ let html=`<h2>自動採点：${score} / ${max} 点</h2>`;
+ html+='<p>ピンクの問題は解説を読み直し、「やり直し」ボタンで再挑戦してみよう！</p>';
+ if(Object.keys(bad).length){
+   html+='<h3>弱点パート</h3><ul>'+Object.entries(bad)
+        .map(([k,v])=>`<li>${k} ×${v}</li>`).join('')+'</ul>';
+ }
+ $('#result').innerHTML=html;
+ $('#gradeBtn').disabled=true;
+});
+</script>
+</body>
+</html>
