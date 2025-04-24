@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>中1 英語 模擬テスト１（講師解説付き）</title>
+  <style>
+    body { font-family: Segoe UI, Arial, Helvetica, sans-serif; margin: 20px; line-height: 1.6; }
+    h1 { color: #2c3e50; }
+    h2 { margin-top: 1.4em; color: #2d6a96; }
+    p.instruction { margin: .4em 0 1em; color: #555; }
+    fieldset { border: 1px solid #ccc; border-radius: 6px; padding: 10px 12px; margin-bottom: 14px; }
+    legend { font-weight: bold; }
+    .q { margin: .6em 0; padding: 6px; border-radius: 4px; }
+    .opt { display: block; margin: 4px 0; }
+    .correct { background: #e8f9e6; }
+    .wrong { background: #fdeeee; }
+    .explain { display: none; margin: 8px 0; color: #d35400; white-space: pre-line; padding: 6px; }
+    textarea, input[type="text"] { width: 96%; }
+    #result { border-top: 3px solid #2c3e50; margin-top: 24px; padding-top: 12px; }
+    button { padding: 6px 16px; margin: 6px 4px; cursor: pointer; }
+    .badge { display: inline-block; background: #3498db; color: #fff; border-radius: 999px; padding: 0 8px; font-size: .8em; margin-left: 4px; }
+    ul.check { margin: 4px 0 0 1em; padding: 0 0 0 1em; }
+  </style>
+</head>
+<body>
+
+  <h1>中学1年 英語 模擬テスト１（講師解説付き）</h1>
+  <p class="instruction">
+    全問解き終えたら<strong>「採点」</strong>を押してください。<br>
+    Ⅰ～Ⅲ、Ⅵは自動採点（70点分）、<br>
+    Ⅳ・Ⅴは詳細解説を見て自己採点しましょう。
+  </p>
+
+  <form id="quiz">
+
+    <!-- I. Vocabulary -->
+    <h2>Ⅰ. Vocabulary <span class="badge">20点</span></h2>
+    <p class="instruction">１～１０の空所にあてはまる語を選び、〇で囲みなさい。（各2点）</p>
+    <fieldset><legend>1–10</legend><div id="p1"></div></fieldset>
+
+    <!-- II. Verb Forms -->
+    <h2>Ⅱ. Verb Forms <span class="badge">14点</span></h2>
+    <p class="instruction">
+      日本語を読んで、下線部にあてはまる動詞を<br>
+      適切な形に直し、空欄に書きなさい。（各2点）
+    </p>
+    <div id="p2"></div>
+
+    <!-- III. Word Order -->
+    <h2>Ⅲ. Word Order <span class="badge">10点</span></h2>
+    <p class="instruction">
+      下の語を正しい順序に並べかえて英文を完成させなさい。<br>
+      １つだけ余分な語があります。（各2点）
+    </p>
+    <div id="p3"></div>
+
+    <!-- IV. 和訳 -->
+    <h2>Ⅳ. 和訳 <span class="badge">10点</span></h2>
+    <p class="instruction">
+      英文を自然な日本語に訳しなさい。（各2点）<br>
+      解答後「模範解答・チェック」を押して詳しい解説を確認してください。
+    </p>
+    <div id="p4"></div>
+
+    <!-- V. 英作文 -->
+    <h2>Ⅴ. 英作文 <span class="badge">20点</span></h2>
+    <p class="instruction">
+      日本語を英語にしなさい。<br>
+      英文は５語以上で書いてください。（各2点）<br>
+      解答後「模範解答・チェック」を押して自己診断しましょう。
+    </p>
+    <div id="p5"></div>
+
+    <!-- VI. Reading -->
+    <h2>Ⅵ. Reading <span class="badge">30点</span></h2>
+    <p class="instruction">
+      本文を読んで、以下の問題に答えなさい。<br>
+      (A) True/False (各2点)、<br>
+      (B) Choose (4点)、<br>
+      (C) Short Answer (各5点)
+    </p>
+    <fieldset><legend>本文</legend>
+      <p><strong>My Sunday</strong><br>
+      I usually get up at seven on Sundays. After breakfast, I play basketball with my friends in the park for two hours. We enjoy the game very much. In the afternoon, I read books or watch movies at home. I like science-fiction movies best. I go to bed at ten.</p>
+    </fieldset>
+    <h3>(A) True / False</h3><div id="p6tf"></div>
+    <h3>(B) Choose the Best Answer</h3><div id="p6mc"></div>
+    <h3>(C) Short Answers</h3><div id="p6sa"></div>
+
+    <button id="gradeBtn" type="button">採点</button>
+    <button type="button" onclick="location.reload()">リセット</button>
+    <div id="result"></div>
+  </form>
+
+<script>
+/* ===== 問題＆解説データ ===== */
+const Data = {
+  /* I. Vocabulary */
+  p1: [
+    { q:'I (  ) breakfast at seven every day.', a:['eat','eats','eating','ate'], ans:0,
+      tip:`【ルール】主語 I,you,we,they は原形を使う。三人称単数だけ -s。\n【例】He eats breakfast. / I eat breakfast.\n【NG】I eats… (✕)` },
+    { q:'This is (  ) orange.', a:['a','an','the','some'], ans:1,
+      tip:`【ルール】母音 (a,e,i,o,u) 始まり → an、それ以外は a。\n【例】an apple, a banana\n【NG】a orange… (✕)` },
+    { q:'My sister is good (  ) music.', a:['at','in','on','with'], ans:0,
+      tip:`【ルール】good at ～「～が得意」。\n【例】She is good at math.\n【NG】good in math… (✕)` },
+    { q:'(  ) you like cats?', a:['Do','Are','Does','Is'], ans:0,
+      tip:`【ルール】一般動詞 like → Do you like ～?\n【例】Do you like dogs?\n【NG】Are you like cats… (✕)` },
+    { q:'There (  ) a park near my house.', a:['is','are','be','was'], ans:0,
+      tip:`【ルール】There is ～ (単数) / there are ～ (複数)\n【例】There is a park.\n【NG】There are a park… (✕)` },
+    { q:'Ken (  ) to school by bike yesterday.', a:['go','goes','went','going'], ans:2,
+      tip:`【ルール】過去 → went\n【例】He went to school yesterday.\n【NG】Ken go… (✕)` },
+    { q:'This bag is (  ). It belongs to Mary.', a:['she','her','hers',"she's"], ans:2,
+      tip:`【ルール】所有代名詞 hers = her + 名詞 →「彼女のもの」\n【例】This book is hers.\n【NG】This bag is her… (✕)` },
+    { q:'(  ) tall that tree is!', a:['What','How','Which','When'], ans:1,
+      tip:`【ルール】感嘆文 How + 形容詞!\n【例】How beautiful this flower is!\n【NG】What tall…! (✕)` },
+    { q:'We have English on (  ).', a:['Monday','cake','bus','green'], ans:0,
+      tip:`【ルール】曜⽇の前置詞 on\n【例】We have math on Tuesday.\n【NG】on the Monday… (✕)` },
+    { q:'Tom can swim (  ) than his brother.', a:['fast','faster','fastest','more fast'], ans:1,
+      tip:`【ルール】比較級 → faster\n【例】He swims faster than me.\n【NG】more fast… (✕)` }
+  ],
+
+  /* II. Verb Forms */
+  p2: [
+    { jp:'私は毎朝6時に起きます。', key:'get up',
+      tip:`【模範例】I get up at six every morning.\n\n① 主語 (Subject)\n・I → 「私」\n\n② 動詞 (Verb)\n・get up → 「起きる」\n\n★ 文法ルール\nget と up はセットで覚える。\n\n× NG例\nI get at six… (✕)` },
+    { jp:'彼らは今、図書館で勉強しています。', key:'are studying',
+      tip:`【模範例】They are studying in the library now.\n\n① 主語\n・They → 「彼ら」\n\n② be動詞 + ing\n・are studying → 「勉強している」\n\n★ 文法ルール\n「今」なら進行形 be + ～ing。\n\n× NG例\nThey study now… (✕)` },
+    { jp:'ケンは昨日その映画を見ました。', key:'watched',
+      tip:`【模範例】Ken watched the movie yesterday.\n\n① 主語\n・Ken → 「ケン」\n\n② 過去形\n・watched → 「見た」\n\n★ 文法ルール\n過去は動詞 + ed。\n\n× NG例\nKen watch… (✕)` },
+    { jp:'母は車を運転しません。', key:"doesn't drive",
+      tip:`【模範例】She doesn't drive a car.\n\n① 主語\n・She → 「母」\n\n② 否定文\n・doesn't drive → 「運転しない」\n\n★ 文法ルール\n三人称単数の否定は does not + 原形。\n\n× NG例\nShe don't drive… (✕)` },
+    { jp:'あなたはテニスをすることができますか。', key:'Can you play',
+      tip:`【模範例】Can you play tennis?\n\n① 助動詞 can\n・Can you ～? → 「～できますか？」\n\n② 動詞\n・play → 「する」\n\n★ 文法ルール\n助動詞 can の否定・疑問は do を使わない。\n\n× NG例\nDo you can play… (✕)` },
+    { jp:'来週京都へ行くつもりです。', key:'will go',
+      tip:`【模範例】I will go to Kyoto next week.\n\n① 助動詞 will\n・will go → 「行くつもり」\n\n★ 文法ルール\n未来は will + 原形。\n\n× NG例\nI go next week… (✕)` },
+    { jp:'雨が降っているので家にいましょう。', key:'is raining',
+      tip:`【模範例】It is raining, so let's stay at home.\n\n① be動詞 + ing\n・is raining → 「雨が降っている」\n\n★ 文法ルール\n天気の進行形は It + is + ～ing。\n\n× NG例\nIt rain now… (✕)` }
+  ],
+
+  /* III. Word Order */
+  p3: [
+    { jp:'これは私のペンです。', words:['is','this','my','pen','not'], key:'This is my pen.',
+      tip:`【模範例】This is my pen.\n\n① This → 「これ」\n② is → 「です」\n③ my pen → 「私のペン」\n\n★ 文法ルール\nThis is ～ の基本構文。\n\n× NG例\nPen is my… (✕)` },
+    { jp:'あなたはどこで昼ごはんを食べますか。', words:['lunch','do','eat','where','you'], key:'Where do you eat lunch?',
+      tip:`【模範例】Where do you eat lunch?\n\n① Where → 「どこで」\n② do you eat → 「あなたは食べますか」\n③ lunch → 「昼ごはんを」\n\n★ 文法ルール\n疑問詞 + do + 主語 + 動詞。\n\n× NG例\nWhere you eat… (✕)` },
+    { jp:'その小さな犬はとても速く走ります。', words:['dog','small','runs','the','very','fast'], key:'The small dog runs very fast.',
+      tip:`【模範例】The small dog runs very fast.\n\n① The small dog → 「その小さな犬」\n② runs very fast → 「とても速く走る」\n\n★ 文法ルール\n形容詞は名詞の前、副詞は動詞の前または後。\n\n× NG例\nSmall dog runs… (✕)` },
+    { jp:'彼女は昨日英語の宿題をしませんでした。', words:['homework','did','she','English','not','do','yesterday'], key:"She didn't do English homework yesterday.",
+      tip:`【模範例】She didn't do English homework yesterday.\n\n① She didn't do → 「彼女はしなかった」\n② English homework → 「英語の宿題を」\n③ yesterday → 「昨日」\n\n★ 文法ルール\n過去否定は did not + 原形。\n\n× NG例\nShe didn't did… (✕)` },
+    { jp:'私たちは日曜日にテニスをする予定です。', words:['will','on','play','Sunday','tennis','we'], key:'We will play tennis on Sunday.',
+      tip:`【模範例】We will play tennis on Sunday.\n\n① We will play → 「私たちはする予定です」\n② tennis on Sunday → 「日曜日にテニスを」\n\n★ 文法ルール\n未来は will + 原形、曜日の前に on。\n\n× NG例\nWe play on Sunday… (✕)` }
+  ],
+
+  /* IV. 和訳 */
+  p4: [
+    { en:'I have two younger brothers.', jp:'私は2人の弟がいます。',
+      check:['主語「I」が訳にあるか','数詞「two」が訳にあるか','younger brothers が訳にあるか'] },
+    { en:'It is raining hard now.', jp:'今、激しく雨が降っています。',
+      check:['It is raining の形か','hard が「激しく」か','now があるか'] },
+    { en:'Can you help me with my homework?', jp:'私の宿題を手伝ってくれますか？',
+      check:['疑問文 Can you …? の形か','with my homework が訳にあるか','語尾に？があるか'] },
+    { en:'There are many books on the desk.', jp:'机の上にたくさんの本があります。',
+      check:['many books が「たくさんの本」か','on the desk が訳にあるか','自然な日本語か'] },
+    { en:'Let’s go to the park after school.', jp:'放課後に公園へ行きましょう。',
+      check:['Let’s が勧誘表現か','after school が訳か','to the park が訳にあるか'] }
+  ],
+
+  /* V. 英作文 */
+  p5: [
+    {
+      jp:'私の父は医者です。',
+      en:'My father is a doctor.',
+      tip:
+`【模範例】My father is a doctor.
+
+① 主語 (Subject)
+・My father → 「私の父」
+
+② 動詞 (Verb)
+・is → be動詞「～です」
+
+③ 補語 (Complement)
+・a doctor → 「医者一人」だから a + 名詞
+
+★ 文法ルール
+主語が三人称単数のとき、be動詞は「is」。
+
+× NG例
+My father are a doctor.`
+    },
+    {
+      jp:'母は料理が上手です。',
+      en:'My mother cooks well.',
+      tip:
+`【模範例】My mother cooks well.
+
+① 主語 (Subject)
+・My mother → 「私の母」
+
+② 動詞 (Verb)
+・cooks → 三人称単数は動詞＋s
+
+③ 副詞 (Adverb)
+・well → 「上手に」
+
+★ 文法ルール
+一般動詞の三人称単数形は「動詞＋s」。
+
+× NG例
+My mother cook well.`
+    },
+    {
+      jp:'昨日あなたはどこにいましたか。',
+      en:'Where were you yesterday?',
+      tip:
+`【模範例】Where were you yesterday?
+
+① 疑問詞＋be動詞
+・Where were → 「どこにいましたか」
+
+② 主語
+・you → 「あなたは」
+
+③ 時を表す語
+・yesterday → 「昨日」
+
+★ 文法ルール
+疑問詞＋be動詞＋主語の順。
+
+× NG例
+Where you were yesterday?`
+    },
+    {
+      jp:'私は猫を2匹飼っています。',
+      en:'I have two cats.',
+      tip:
+`【模範例】I have two cats.
+
+① 主語
+・I → 「私」
+
+② 動詞
+・have → 「持っている」
+
+③ 目的語
+・two cats → 「猫を2匹」
+
+★ 文法ルール
+名詞の数に注意し、複数形に s を付ける。
+
+× NG例
+I have two cat.`
+    },
+    {
+      jp:'机の上に本がありますか。',
+      en:'Is there a book on the desk?',
+      tip:
+`【模範例】Is there a book on the desk?
+
+① 疑問形
+・Is there …? → 「～がありますか」
+
+② 名詞
+・a book → 「本一冊」なので a
+
+③ 場所
+・on the desk → 「机の上に」
+
+★ 文法ルール
+there is/are の疑問形は Is there? / Are there?
+
+× NG例
+There is a book on the desk?`
+    },
+    {
+      jp:'母は料理を作ることができます。',
+      en:'My mother can cook meals.',
+      tip:
+`【模範例】My mother can cook meals.
+
+① 主語
+・My mother → 「私の母」
+
+② 助動詞＋動詞
+・can cook → 「作ることができる」
+
+③ 目的語
+・meals → 「料理（複数形）」に注意
+
+★ 文法ルール
+助動詞 can の後は原形。
+
+× NG例
+My mother can cooks meals.`
+    },
+    {
+      jp:'私たちは来週テストがあります。',
+      en:'We have a test next week.',
+      tip:
+`【模範例】We have a test next week.
+
+① 主語
+・We → 「私たちは」
+
+② 動詞
+・have → 「持っている/ある」
+
+③ 時を表す語
+・next week → 「来週」
+
+★ 文法ルール
+時を表す語は文末に置く。
+
+× NG例
+Next week we have a test.`
+    }
+  ],
+
+  /* VI. Reading */
+  read_tf: [
+    { s:'The writer gets up at eight on Sundays.', ans:false, tip:'本文は seven → eight は誤り。' },
+    { s:'The writer plays basketball for two hours.', ans:true, tip:'本文と一致 for two hours。' },
+    { s:'The writer goes to bed at eleven.', ans:false, tip:'本文は ten → eleven は誤り。' }
+  ],
+  read_mc: {
+    q:'What does the writer like best?',
+    opts:['Action movies','Science-fiction movies','Comedy movies','Horror movies'],
+    ans:1,
+    tip:'本文 “I like science-fiction movies best.” と一致。'
+  },
+  read_sa: [
+    { q:'Where does the writer play basketball?', ans:'in the park', tip:'本文 “in the park” と同じ。' },
+    { q:'What time does the writer go to bed?', ans:'at ten', tip:'本文 “at ten” と同じ。' }
+  ]
+};
+
+/* ===== 画面生成 ===== */
+const $ = s => document.querySelector(s);
+
+// I. Vocabulary
+Data.p1.forEach((o,i)=>{
+  $('#p1').insertAdjacentHTML('beforeend',
+    `<div class="q" id="q1_${i}">${i+1}. ${o.q}<br>`+
+    o.a.map((t,j)=>`<label class="opt"><input type="radio" name="p1_${i}" value="${j}"> ${String.fromCharCode(65+j)} ${t}</label>`).join('')+
+    `<div class="explain"></div></div>`
+  );
+});
+
+// II. Verb Forms
+Data.p2.forEach((o,i)=>{
+  $('#p2').insertAdjacentHTML('beforeend',
+    `<div class="q" id="q2_${i}">${11+i}. ${o.jp}<br>`+
+    `<input type="text" name="p2_${i}"><div class="explain"></div></div>`
+  );
+});
+
+// III. Word Order
+Data.p3.forEach((o,i)=>{
+  $('#p3').insertAdjacentHTML('beforeend',
+    `<div class="q" id="q3_${i}">${18+i}. ${o.jp}<br>`+
+    `( ${o.words.join(' / ')} ) → <input type="text" name="p3_${i}" style="width:60%"><div class="explain"></div></div>`
+  );
+});
+
+// IV. 和訳
+Data.p4.forEach((o,i)=>{
+  $('#p4').insertAdjacentHTML('beforeend',
+    `<div class="q">${23+i}. ${o.en}<br>`+
+    `<textarea name="p4_${i}"></textarea><br>`+
+    `<button type="button" onclick="this.nextElementSibling.style.display='block'">模範解答・チェック</button>`+
+    `<div class="explain">【模範例】${o.jp}\n<u>チェックリスト</u>\n`+
+    o.check.map(c=>`• ${c}\n`).join('')+
+    `</div></div>`
+  );
+});
+
+// V. 英作文
+Data.p5.forEach((o,i)=>{
+  $('#p5').insertAdjacentHTML('beforeend',
+    `<div class="q">${28+i}. ${o.jp}<br>`+
+    `<textarea name="p5_${i}"></textarea><br>`+
+    `<button type="button" onclick="this.nextElementSibling.style.display='block'">模範解答・チェック</button>`+
+    `<div class="explain">${o.tip}</div></div>`
+  );
+});
+
+// VI. Reading TF
+Data.read_tf.forEach((o,i)=>{
+  $('#p6tf').insertAdjacentHTML('beforeend',
+    `<div class="q" id="q6tf_${i}">${35+i}. ${o.s}<br>`+
+    `<label><input type="radio" name="tf_${i}" value="T">T</label> `+
+    `<label><input type="radio" name="tf_${i}" value="F">F</label>`+
+    `<div class="explain"></div></div>`
+  );
+});
+
+// VI. Reading MC
+$('#p6mc').innerHTML =
+  `38. ${Data.read_mc.q}<br>`+
+  Data.read_mc.opts.map((w,j)=>`<label class="opt"><input type="radio" name="mc" value="${j}"> ${String.fromCharCode(65+j)} ${w}</label>`).join('')+
+  `<div class="explain"></div>`;
+
+// VI. Reading SA
+Data.read_sa.forEach((o,i)=>{
+  $('#p6sa').insertAdjacentHTML('beforeend',
+    `<div class="q" id="q6sa_${i}">${39+i}. ${o.q}<br>`+
+    `<input type="text" name="sa_${i}" style="width:60%"><div class="explain"></div></div>`
+  );
+});
+
+/* ===== 採点ボタン ===== */
+$('#gradeBtn').onclick = function(){
+  let score=0, max=70, bad={};
+
+  // I
+  Data.p1.forEach((o,i)=>{
+    const root=document.getElementById(`q1_${i}`),
+          sel=root.querySelector(`input[name="p1_${i}"]:checked`),
+          box=root.querySelector('.explain');
+    if(sel && +sel.value===o.ans){
+      score+=2; root.classList.add('correct');
+    } else {
+      root.classList.add('wrong');
+      bad['P1']=(bad['P1']||0)+1;
+      box.textContent=`正解：${o.a[o.ans]}\n解説：${o.tip}`;
+      box.style.display='block';
+    }
+  });
+
+  // II
+  Data.p2.forEach((o,i)=>{
+    const root=document.getElementById(`q2_${i}`),
+          val=(root.querySelector(`input[name="p2_${i}"]`).value||'').trim().toLowerCase(),
+          box=root.querySelector('.explain');
+    if(val===o.key.toLowerCase()){
+      score+=2; root.classList.add('correct');
+    } else {
+      root.classList.add('wrong');
+      bad['P2']=(bad['P2']||0)+1;
+      box.textContent=`正解：${o.key}\n解説：${o.tip}`;
+      box.style.display='block';
+    }
+  });
+
+  // III
+  Data.p3.forEach((o,i)=>{
+    const root=document.getElementById(`q3_${i}`),
+          val=(root.querySelector(`input[name="p3_${i}"]`).value||'').trim().replace(/\s+/g,' '),
+          box=root.querySelector('.explain');
+    if(val.toLowerCase()===o.key.toLowerCase()){
+      score+=2; root.classList.add('correct');
+    } else {
+      root.classList.add('wrong');
+      bad['P3']=(bad['P3']||0)+1;
+      box.textContent=`正解：${o.key}\n解説：${o.tip}`;
+      box.style.display='block';
+    }
+  });
+
+  // VI TF
+  Data.read_tf.forEach((o,i)=>{
+    const root=document.getElementById(`q6tf_${i}`),
+          sel=root.querySelector(`input[name="tf_${i}"]:checked`),
+          box=root.querySelector('.explain');
+    if(sel && ((sel.value==='T')===o.ans)){
+      score+=2; root.classList.add('correct');
+    } else {
+      root.classList.add('wrong');
+      bad['Reading']=(bad['Reading']||0)+1;
+      box.textContent=`正解：${o.ans?'T':'F'}\n解説：${o.tip}`;
+      box.style.display='block';
+    }
+  });
+
+  // VI MC
+  {
+    const root=$('#p6mc'),
+          sel=root.querySelector('input[name="mc"]:checked'),
+          box=root.querySelector('.explain');
+    if(sel && +sel.value===Data.read_mc.ans){
+      score+=4; root.classList.add('correct');
+    } else {
+      root.classList.add('wrong');
+      bad['Reading']=(bad['Reading']||0)+1;
+      box.textContent=`正解：${Data.read_mc.opts[Data.read_mc.ans]}\n解説：${Data.read_mc.tip}`;
+      box.style.display='block';
+    }
+  }
+
+  // VI SA
+  Data.read_sa.forEach((o,i)=>{
+    const root=document.getElementById(`q6sa_${i}`),
+          val=(root.querySelector(`input[name="sa_${i}"]`).value||'').trim().toLowerCase(),
+          box=root.querySelector('.explain');
+    if(val===o.ans){
+      score+=10; root.classList.add('correct');
+    } else {
+      root.classList.add('wrong');
+      bad['Reading']=(bad['Reading']||0)+1;
+      box.textContent=`正解：${o.ans}\n解説：${o.tip}`;
+      box.style.display='block';
+    }
+  });
+
+  // 結果表示
+  const R=document.getElementById('result');
+  let html=`<h2>自動採点：${score} / ${max} 点</h2>`;
+  if(Object.keys(bad).length){
+    html+='<h3>弱点パート</h3><ul>'+Object.entries(bad)
+         .map(([k,v])=>`<li>${k} ×${v}</li>`).join('')+'</ul>';
+  } else {
+    html+='<p>全問正解！よく頑張りました！</p>';
+  }
+  R.innerHTML=html;
+  this.disabled = true;
+};
+</script>
+
+</body>
+</html>
