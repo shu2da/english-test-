@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>中1 英語 模擬テスト２（家族テーマ・講師解説付き）</title>
+  <style>
+    /* --- テスト１と同一のスタイル --- */
+    body { font-family: Segoe UI, Arial, Helvetica, sans-serif; margin: 20px; line-height: 1.6; }
+    h1 { color: #2c3e50; }
+    h2 { margin-top: 1.4em; color: #2d6a96; }
+    p.instruction { margin: .4em 0 1em; color: #555; }
+    fieldset { border: 1px solid #ccc; border-radius: 6px; padding: 10px 12px; margin-bottom: 14px; }
+    legend { font-weight: bold; }
+    .q { margin: .6em 0; padding: 6px; border-radius: 4px; }
+    .opt { display: block; margin: 4px 0; }
+    .correct { background: #e8f9e6; }
+    .wrong { background: #fdeeee; }
+    .explain { display: none; margin: 8px 0; color: #d35400; white-space: pre-line; padding: 6px; }
+    textarea, input[type="text"] { width: 96%; }
+    #result { border-top: 3px solid #2c3e50; margin-top: 24px; padding-top: 12px; }
+    button { padding: 6px 16px; margin: 6px 4px; cursor: pointer; }
+    .badge { display: inline-block; background: #3498db; color: #fff; border-radius: 999px; padding: 0 8px; font-size: .8em; margin-left: 4px; }
+    ul.check { margin: 4px 0 0 1em; padding: 0 0 0 1em; }
+  </style>
+</head>
+<body>
+
+  <h1>中学1年 英語 模擬テスト２（家族テーマ・講師解説付き）</h1>
+  <p class="instruction">
+    全問解き終えたら<strong>「採点」</strong>を押してください。<br>
+    Ⅰ～Ⅲ、Ⅵは自動採点（70点分）、<br>
+    Ⅳ・Ⅴは詳細解説を見て自己採点しましょう。
+  </p>
+
+  <form id="quiz">
+
+    <!-- I. Vocabulary -->
+    <h2>Ⅰ. Vocabulary <span class="badge">20点</span></h2>
+    <p class="instruction">１～１０の空所にあてはまる語を選び、〇で囲みなさい。（各2点）</p>
+    <fieldset><legend>1–10</legend><div id="p1"></div></fieldset>
+
+    <!-- II. Verb Forms -->
+    <h2>Ⅱ. Verb Forms <span class="badge">14点</span></h2>
+    <p class="instruction">日本語を読んで、下線部にあてはまる動詞を適切な形に直し、空欄に書きなさい。（各2点）</p>
+    <div id="p2"></div>
+
+    <!-- III. Word Order -->
+    <h2>Ⅲ. Word Order <span class="badge">10点</span></h2>
+    <p class="instruction">下の語を正しい順序に並べかえて英文を完成させなさい。１つ余分な語があります。（各2点）</p>
+    <div id="p3"></div>
+
+    <!-- IV. 和訳 -->
+    <h2>Ⅳ. 和訳 <span class="badge">10点</span></h2>
+    <p class="instruction">英文を自然な日本語に訳しなさい。（各2点）<br>解答後「模範解答・チェック」を押して詳しい解説を確認してください。</p>
+    <div id="p4"></div>
+
+    <!-- V. 英作文 -->
+    <h2>Ⅴ. 英作文 <span class="badge">20点</span></h2>
+    <p class="instruction">日本語を英語にしなさい。英文は５語以上で書いてください。（各2点）<br>解答後「模範解答・チェック」を押して自己診断しましょう。</p>
+    <div id="p5"></div>
+
+    <!-- VI. Reading -->
+    <h2>Ⅵ. Reading <span class="badge">30点</span></h2>
+    <p class="instruction">
+      本文を読んで、以下の問題に答えなさい。<br>
+      (A) True/False (各2点)、<br>
+      (B) Choose (4点)、<br>
+      (C) Short Answer (各5点)
+    </p>
+    <fieldset><legend>本文</legend>
+      <p><strong>My Family</strong><br>
+      I have five people in my family. My father is a doctor and my mother is a nurse. I have one older sister and one younger brother. Every Sunday we eat lunch together and talk about our week.</p>
+    </fieldset>
+    <h3>(A) True / False</h3><div id="p6tf"></div>
+    <h3>(B) Choose the Best Answer</h3><div id="p6mc"></div>
+    <h3>(C) Short Answers</h3><div id="p6sa"></div>
+
+    <button id="gradeBtn" type="button">採点</button>
+    <button type="button" onclick="location.reload()">リセット</button>
+    <div id="result"></div>
+  </form>
+
+<script>
+/* ===== 問題＆解説データ（家族テーマ） ===== */
+const Data = {
+  p1:[
+    { q:'My (  ) is a doctor.', a:['mother','father','sister','brother'], ans:1,
+      tip:`【ルール】father = 「父」\n【模範例】My father is a doctor.\n【NG例】My mother is a doctor.` },
+    { q:'I have two younger (  ).', a:['brother','brothers','sister','sisters'], ans:1,
+      tip:`【ルール】複数 → brothers\n【模範例】I have two younger brothers.\n【NG例】I have two younger brother.` },
+    { q:'My (  ) is a nurse.', a:['mother','father','sister','brother'], ans:0,
+      tip:`【ルール】mother = 「母」\n【模範例】My mother is a nurse.\n【NG例】My mother am a nurse.` },
+    { q:'Her (  ) is a soccer player.', a:['sister','brother','father','mother'], ans:1,
+      tip:`【ルール】brother = 「兄弟」\n【模範例】Her brother is a soccer player.\n【NG例】Her brother are a soccer player.` },
+    { q:'Their (  ) live in Tokyo.', a:['parent','parents','brother','sister'], ans:1,
+      tip:`【ルール】複数 → parents\n【模範例】Their parents live in Tokyo.\n【NG例】Their parent live…` },
+    { q:'His (  ) works at a bank.', a:['father','mother','sister','brother'], ans:0,
+      tip:`【ルール】father = 「父」\n【模範例】His father works at a bank.\n【NG例】His father work…` },
+    { q:'They have two older (  ).', a:['sister','sisters','brother','brothers'], ans:1,
+      tip:`【ルール】複数 → sisters\n【模範例】They have two older sisters.\n【NG例】They have two older sister.` },
+    { q:'My (  ) likes cooking.', a:['mother','father','sister','brother'], ans:0,
+      tip:`【ルール】My mother → 主語三人称単数\n【模範例】My mother likes cooking.\n【NG例】My mother like cooking.` },
+    { q:'Her (  ) is a teacher.', a:['mother','father','sister','brother'], ans:0,
+      tip:`【ルール】mother = 「母」\n【模範例】Her mother is a teacher.\n【NG例】Her mother are a teacher.` },
+    { q:'Our (  ) are students.', a:['parent','parents','brother','sister'], ans:1,
+      tip:`【ルール】parents = 「両親」\n【模範例】Our parents are students.\n【NG例】Our parents is students.` }
+  ],
+  p2:[
+    { jp:'父は車で仕事に行きます。', key:'goes to work',
+      tip:`【模範例】My father goes to work by car.\n\n① 主語：My father\n② 動詞：goes to work\n\n★三人称単数は動詞＋s` },
+    { jp:'母は昨日テレビを見ませんでした。', key:"didn't watch TV",
+      tip:`【模範例】My mother didn't watch TV yesterday.\n\n★過去の否定 = did not + 原形` },
+    { jp:'姉は毎日ギターを弾きます。', key:'plays guitar',
+      tip:`【模範例】My sister plays guitar every day.\n\n★三人称単数は動詞＋s` },
+    { jp:'私たちは今、公園で遊んでいます。', key:'are playing',
+      tip:`【模範例】We are playing in the park now.\n\n★進行形 = be + ing` },
+    { jp:'彼らは来週旅行に行くでしょう。', key:'will go',
+      tip:`【模範例】They will go on a trip next week.\n\n★未来 = will + 原形` },
+    { jp:'弟はたくさん本を読みます。', key:'reads many books',
+      tip:`【模範例】My younger brother reads many books.\n\n★三人称単数は動詞＋s` },
+    { jp:'妹は毎晩ピアノを練習します。', key:'practices piano',
+      tip:`【模範例】My sister practices piano every night.\n\n★三人称単数は動詞＋s` }
+  ],
+  p3:[
+    { jp:'私の母は看護師です。', words:['is','my','nurse','mother','a'], key:'My mother is a nurse.',
+      tip:`【模範例】My mother is a nurse.` },
+    { jp:'兄は医者です。', words:['is','doctor','brother','a','my'], key:'My brother is a doctor.',
+      tip:`【模範例】My brother is a doctor.` },
+    { jp:'これは妹の本です。', words:['book','this','sister','my','is'], key:"This is my sister's book.",
+      tip:`【模範例】This is my sister's book.` },
+    { jp:'私たちは毎日兄弟と遊びます。', words:['play','with','brothers','we','every','day'], key:'We play with our brothers every day.',
+      tip:`【模範例】We play with our brothers every day.` },
+    { jp:'彼女はその映画を好きではありません。', words:['Does','like','not','movie','she','the'], key:"She does not like the movie.",
+      tip:`【模範例】She does not like the movie.` }
+  ],
+  p4:[
+    { en:'I have two older sisters.', jp:'私は二人の姉がいます。',
+      check:['I が訳にあるか','two older sisters が訳にあるか'] },
+    { en:'My mother is cooking now.', jp:'母は今料理をしています。',
+      check:['My mother が訳か','is cooking now が訳にあるか'] },
+    { en:'My father often grows flowers in the garden.', jp:'父はよく庭で花を育てます。',
+      check:['My father が訳か','grows flowers が訳か','in the garden が訳にあるか'] },
+    { en:'My brother jogs every morning.', jp:'兄は毎朝ジョギングをします。',
+      check:['My brother が訳か','jogs every morning が訳か'] },
+    { en:'My grandfather often tells us old stories.', jp:'祖父はよく昔話をしてくれます。',
+      check:['My grandfather が訳か','tells us old stories が訳か'] }
+  ],
+  p5:[
+    { jp:'弟はテニスが好きです。', en:'My younger brother likes tennis.',
+      tip:`【模範例】My younger brother likes tennis.\n\n① 主語：My younger brother\n② 動詞：likes\n③ 目的語：tennis\n\n★三人称単数は verbs + s` },
+    { jp:'私たちは毎週日曜日に映画を見に行きます。', en:'We go to the movies every Sunday.',
+      tip:`【模範例】We go to the movies every Sunday.\n\n★go to the movies = 「映画に行く」` },
+    { jp:'母はケーキを上手に作ります。', en:'My mother bakes cakes well.',
+      tip:`【模範例】My mother bakes cakes well.\n\n★副詞 well の位置に注意` },
+    { jp:'父は週末に釣りに行きます。', en:'My father goes fishing on weekends.',
+      tip:`【模範例】My father goes fishing on weekends.\n\n★go fishing = 「釣りに行く」` },
+    { jp:'姉は英語が得意です。', en:'My older sister is good at English.',
+      tip:`【模範例】My older sister is good at English.\n\n★good at + 名詞` },
+    { jp:'祖母は庭で花を育てます。', en:'My grandmother grows flowers in the garden.',
+      tip:`【模範例】My grandmother grows flowers in the garden.\n\n★in the garden = 場所表現` },
+    { jp:'私たちは家族で旅行に行く予定です。', en:'We will travel with our family.',
+      tip:`【模範例】We will travel with our family.\n\n★未来は will + 原形` }
+  ],
+  read_tf:[
+    { s:'My mother is a doctor.', ans:false, tip:'本文では “My mother is a nurse.” なので誤り。' },
+    { s:'There are six people in my family.', ans:false, tip:'本文は five people。' },
+    { s:'We play soccer on Sunday.', ans:false, tip:'本文は eat lunch together なので違う。' }
+  ],
+  read_mc:{
+    q:'How many people are in the family?',
+    opts:['4','5','6','7'],
+    ans:1,
+    tip:'本文 “I have five people in my family.” と一致。'
+  },
+  read_sa:[
+    { q:'What does the mother do?', ans:'she is a nurse', tip:'本文 “my mother is a nurse.” と同じ。' },
+    { q:'When do they eat lunch?', ans:'every sunday', tip:'本文 “Every Sunday we eat lunch together.” と同じ。' }
+  ]
+};
+
+/* ===== 画面生成 ===== */
+const $ = s => document.querySelector(s);
+
+// I. Vocabulary
+Data.p1.forEach((o,i)=>{
+  $('#p1').insertAdjacentHTML('beforeend',
+    `<div class="q" id="q1_${i}">${i+1}. ${o.q}<br>`+
+    o.a.map((t,j)=>`<label class="opt"><input type="radio" name="p1_${i}" value="${j}"> ${String.fromCharCode(65+j)} ${t}</label>`).join('')+
+    `<div class="explain"></div></div>`
+  );
+});
+
+// II. Verb Forms
+Data.p2.forEach((o,i)=>{
+  $('#p2').insertAdjacentHTML('beforeend',
+    `<div class="q" id="q2_${i}">${11+i}. ${o.jp}<br>`+
+    `<input type="text" name="p2_${i}"><div class="explain"></div></div>`
+  );
+});
+
+// III. Word Order
+Data.p3.forEach((o,i)=>{
+  $('#p3').insertAdjacentHTML('beforeend',
+    `<div class="q" id="q3_${i}">${18+i}. ${o.jp}<br>`+
+    `( ${o.words.join(' / ')} ) → <input type="text" name="p3_${i}" style="width:60%"><div class="explain"></div></div>`
+  );
+});
+
+// IV. 和訳
+Data.p4.forEach((o,i)=>{
+  $('#p4').insertAdjacentHTML('beforeend',
+    `<div class="q">${23+i}. ${o.en}<br>`+
+    `<textarea name="p4_${i}"></textarea><br>`+
+    `<button type="button" onclick="this.nextElementSibling.style.display='block'">模範解答・チェック</button>`+
+    `<div class="explain">【模範例】${o.jp}\n<u>チェックリスト</u>\n`+
+    o.check.map(c=>`• ${c}\n`).join('')+
+    `</div></div>`
+  );
+});
+
+// V. 英作文
+Data.p5.forEach((o,i)=>{
+  $('#p5').insertAdjacentHTML('beforeend',
+    `<div class="q">${28+i}. ${o.jp}<br>`+
+    `<textarea name="p5_${i}"></textarea><br>`+
+    `<button type="button" onclick="this.nextElementSibling.style.display='block'">模範解答・チェック</button>`+
+    `<div class="explain">${o.tip}</div></div>`
+  );
+});
+
+// VI. Reading TF
+Data.read_tf.forEach((o,i)=>{
+  $('#p6tf').insertAdjacentHTML('beforeend',
+    `<div class="q" id="q6tf_${i}">${35+i}. ${o.s}<br>`+
+    `<label><input type="radio" name="tf_${i}" value="T">T</label> `+
+    `<label><input type="radio" name="tf_${i}" value="F">F</label>`+
+    `<div class="explain"></div></div>`
+  );
+});
+
+// VI. Reading MC
+$('#p6mc').innerHTML =
+  `38. ${Data.read_mc.q}<br>`+
+  Data.read_mc.opts.map((w,j)=>`<label class="opt"><input type="radio" name="mc" value="${j}"> ${String.fromCharCode(65+j)} ${w}</label>`).join('')+
+  `<div class="explain"></div>`;
+
+// VI. Reading SA
+Data.read_sa.forEach((o,i)=>{
+  $('#p6sa').insertAdjacentHTML('beforeend',
+    `<div class="q" id="q6sa_${i}">${39+i}. ${o.q}<br>`+
+    `<input type="text" name="sa_${i}" style="width:60%"><div class="explain"></div></div>`
+  );
+});
+
+/* ===== 採点ロジック ===== */
+$('#gradeBtn').onclick = function(){
+  let score=0, max=70, bad={};
+
+  // I
+  Data.p1.forEach((o,i)=>{
+    const r=document.getElementById(`q1_${i}`),
+          sel=r.querySelector(`input[name="p1_${i}"]:checked`),
+          bx=r.querySelector('.explain');
+    if(sel && +sel.value===o.ans){
+      score+=2; r.classList.add('correct');
+    } else {
+      r.classList.add('wrong');
+      bad['P1']=(bad['P1']||0)+1;
+      bx.textContent=`正解：${o.a[o.ans]}\n解説：${o.tip}`; bx.style.display='block';
+    }
+  });
+
+  // II
+  Data.p2.forEach((o,i)=>{
+    const r=document.getElementById(`q2_${i}`),
+          val=(r.querySelector(`input[name="p2_${i}"]`).value||'').trim().toLowerCase(),
+          bx=r.querySelector('.explain');
+    if(val===o.key.toLowerCase()){
+      score+=2; r.classList.add('correct');
+    } else {
+      r.classList.add('wrong');
+      bad['P2']=(bad['P2']||0)+1;
+      bx.textContent=`正解：${o.key}\n解説：${o.tip}`; bx.style.display='block';
+    }
+  });
+
+  // III
+  Data.p3.forEach((o,i)=>{
+    const r=document.getElementById(`q3_${i}`),
+          val=(r.querySelector(`input[name="p3_${i}"]`).value||'').trim().replace(/\s+/g,' '),
+          bx=r.querySelector('.explain');
+    if(val.toLowerCase()===o.key.toLowerCase()){
+      score+=2; r.classList.add('correct');
+    } else {
+      r.classList.add('wrong');
+      bad['P3']=(bad['P3']||0)+1;
+      bx.textContent=`正解：${o.key}\n解説：${o.tip}`; bx.style.display='block';
+    }
+  });
+
+  // VI: TF
+  Data.read_tf.forEach((o,i)=>{
+    const r=document.getElementById(`q6tf_${i}`),
+          sel=r.querySelector(`input[name="tf_${i}"]:checked`),
+          bx=r.querySelector('.explain');
+    if(sel && ((sel.value==='T')===o.ans)){
+      score+=2; r.classList.add('correct');
+    } else {
+      r.classList.add('wrong');
+      bad['Reading']=(bad['Reading']||0)+1;
+      bx.textContent=`正解：${o.ans?'T':'F'}\n解説：${o.tip}`; bx.style.display='block';
+    }
+  });
+
+  // VI: MC
+  {
+    const root=$('#p6mc'),
+          sel=root.querySelector('input[name="mc"]:checked'),
+          bx=root.querySelector('.explain');
+    if(sel && +sel.value===Data.read_mc.ans){
+      score+=4; root.classList.add('correct');
+    } else {
+      root.classList.add('wrong');
+      bad['Reading']=(bad['Reading']||0)+1;
+      bx.textContent=`正解：${Data.read_mc.opts[Data.read_mc.ans]}\n解説：${Data.read_mc.tip}`; bx.style.display='block';
+    }
+  }
+
+  // VI: SA
+  Data.read_sa.forEach((o,i)=>{
+    const r=document.getElementById(`q6sa_${i}`),
+          val=(r.querySelector(`input[name="sa_${i}"]`).value||'').trim().toLowerCase(),
+          bx=r.querySelector('.explain');
+    if(val===o.ans){
+      score+=10; r.classList.add('correct');
+    } else {
+      r.classList.add('wrong');
+      bad['Reading']=(bad['Reading']||0)+1;
+      bx.textContent=`正解：${o.ans}\n解説：${o.tip}`; bx.style.display='block';
+    }
+  });
+
+  // 結果表示
+  const R=document.getElementById('result');
+  let html=`<h2>自動採点：${score} / ${max} 点</h2>`;
+  if(Object.keys(bad).length){
+    html+='<h3>弱点パート</h3><ul>'+Object.entries(bad)
+         .map(([k,v])=>`<li>${k} ×${v}</li>`).join('')+'</ul>';
+  } else {
+    html+='<p>全問正解！素晴らしいですね！</p>';
+  }
+  R.innerHTML=html;
+  this.disabled=true;
+};
+</script>
+
+</body>
+</html>
