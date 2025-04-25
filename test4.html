@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>中1 英語 模擬テスト４（学校生活テーマ・講師解説付き）</title>
+  <style>
+    body{font-family:Segoe UI,Arial,sans-serif;margin:20px;line-height:1.6}
+    h1{color:#2c3e50}
+    h2{margin-top:1.4em;color:#2d6a96}
+    p.instruction{margin:.4em 0 1em;color:#555}
+    fieldset{border:1px solid #ccc;border-radius:6px;padding:10px 12px;margin-bottom:14px}
+    legend{font-weight:bold}
+    .q{margin:.6em 0;padding:6px;border-radius:4px}
+    .opt{display:block;margin:4px 0}
+    .correct{background:#e8f9e6}
+    .wrong{background:#fdeeee}
+    .explain{display:none;margin:8px 0;color:#d35400;white-space:pre-line;padding:6px}
+    textarea,input[type="text"],select{width:96%}
+    #result{border-top:3px solid #2c3e50;margin-top:24px;padding-top:12px}
+    button{padding:6px 16px;margin:6px 4px;cursor:pointer}
+    .badge{display:inline-block;background:#3498db;color:#fff;border-radius:999px;padding:0 8px;font-size:.8em;margin-left:4px}
+    ul.check{margin:4px 0 0 1em;padding:0 0 0 1em}
+  </style>
+</head>
+<body>
+
+  <h1>中学1年 英語 模擬テスト４（学校生活テーマ・講師解説付き）</h1>
+  <p class="instruction">
+    全問解き終えたら<strong>「採点」</strong>を押してください。<br>
+    Ⅰ～Ⅲ、Ⅵは自動採点（70点分）、<br>
+    Ⅳ・Ⅴは詳細解説を見て自己採点しましょう。
+  </p>
+
+  <form id="quiz">
+
+    <!-- I. Vocabulary Matching -->
+    <h2>Ⅰ. Vocabulary Matching <span class="badge">20点</span></h2>
+    <p class="instruction">英単語に合う日本語訳の記号（A～J）をプルダウンから選びなさい。（各2点）</p>
+    <fieldset><legend>1–10</legend><div id="p1"></div></fieldset>
+
+    <!-- II. Cloze Test -->
+    <h2>Ⅱ. Cloze Test <span class="badge">10点</span></h2>
+    <p class="instruction">英文の空所に入る語を適切な形で書きなさい。（各2点）</p>
+    <div id="p2"></div>
+
+    <!-- III. Error Correction -->
+    <h2>Ⅲ. Error Correction <span class="badge">10点</span></h2>
+    <p class="instruction">下の英文には誤りが1か所あります。正しい英文に直して書きなさい。（各2点）</p>
+    <div id="p3"></div>
+
+    <!-- IV. 和訳 -->
+    <h2>Ⅳ. 和訳 <span class="badge">10点</span></h2>
+    <p class="instruction">英文を自然な日本語に訳しなさい。（各2点）<br>解答後「模範解答・チェック」を押して解説を確認。</p>
+    <div id="p4"></div>
+
+    <!-- V. 英作文 -->
+    <h2>Ⅴ. 英作文 <span class="badge">20点</span></h2>
+    <p class="instruction">日本語を英語にしなさい。英文は５語以上。（各4点）<br>解答後「模範解答・チェック」で自己診断。</p>
+    <div id="p5"></div>
+
+    <!-- VI. Reading Comprehension -->
+    <h2>Ⅵ. Reading Comprehension <span class="badge">30点</span></h2>
+    <p class="instruction">
+      本文を読んで答えなさい。<br>
+      (A) True/False (2点×3)、<br>
+      (B) Choose (4点)、<br>
+      (C) Short Answer (5点×2)
+    </p>
+    <fieldset><legend>本文</legend>
+      <p><strong>School Life</strong><br>
+      I arrive at school at eight o'clock. At noon, I eat lunch in the cafeteria. In the afternoon, I study in the library or play games in the gym. School ends at three thirty.</p>
+    </fieldset>
+    <h3>(A) True / False</h3><div id="p6tf"></div>
+    <h3>(B) Choose the Best Answer</h3><div id="p6mc"></div>
+    <h3>(C) Short Answers</h3><div id="p6sa"></div>
+
+    <button id="gradeBtn" type="button">採点</button>
+    <button type="button" onclick="location.reload()">リセット</button>
+    <div id="result"></div>
+  </form>
+
+<script>
+// ── 問題データ ──
+const Data = {
+  // I. Vocabulary Matching
+  vocab: [
+    {word:'1. cafeteria',    options:['食堂','教室','校庭','図書館','体育館','校門','教師','生徒','休み時間','机'], ans:0},
+    {word:'2. recess',       options:['教室','休み時間','授業','帰宅','昼休み','朝礼','掃除','自習','音楽室','理科室'], ans:1},
+    {word:'3. student',      options:['教師','生徒','校長','父母','後輩','先輩','友だち','職員','部長','委員'], ans:1},
+    {word:'4. library',      options:['保健室','理科室','図書館','音楽室','体育館','美術室','英語室','職員室','会議室','校長室'], ans:2},
+    {word:'5. gym',          options:['校庭','体育館','音楽室','図書館','保健室','美術室','理科室','教室','職員室','校門'], ans:1},
+    {word:'6. schedule',     options:['時間割','名簿','成績','試験','休憩','掃除','給食','行事','遠足','集会'], ans:0},
+    {word:'7. principal',    options:['生徒','教師','校長','部長','委員','職員','校医','事務員','保健医','留学生'], ans:2},
+    {word:'8. uniform',      options:['制服','授業','教科書','靴箱','筆箱','机','椅子','黒板','地図','棚'], ans:0},
+    {word:'9. assembly',     options:['掃除','集会','給食','休み','運動会','体育祭','英検','卒業式','入学式','試験'], ans:1},
+    {word:'10. textbook',    options:['教科書','参考書','辞書','ノート','黒板','学年','学級','部室','保健室','職員室'], ans:0}
+  ],
+  // II. Cloze Test
+  cloze: [
+    {en:"11. I ____ to school at eight o'clock.",             key:"go"},
+    {en:"12. At noon, I ____ lunch in the cafeteria.",         key:"eat"},
+    {en:"13. In the afternoon, I ____ in the library.",        key:"study"},
+    {en:"14. Sometimes I ____ games in the gym.",              key:"play"},
+    {en:"15. School ____ at three thirty.",                   key:"ends"}
+  ],
+  // III. Error Correction
+  error: [
+    {wrong:"16. She go to school by bus every day.",   key:"She goes to school by bus every day."},
+    {wrong:"17. They is studying English now.",        key:"They are studying English now."},
+    {wrong:"18. I am late always.",                    key:"I am always late."},
+    {wrong:"19. He play soccer after lunch.",          key:"He plays soccer after lunch."},
+    {wrong:"20. We has lunch at twelve.",              key:"We have lunch at twelve."}
+  ],
+  // IV. 和訳
+  p4:[
+    {en:"21. I have a math test tomorrow.",        jp:"私は明日数学のテストがあります。", check:['I が訳にあるか','math test が訳か','tomorrow が訳か']},
+    {en:"22. My teacher is kind and funny.",       jp:"私の先生は親切で面白いです。",       check:['My teacher','kind and funny','訳になっているか']},
+    {en:"23. We clean the classroom every day.",   jp:"私たちは毎日教室を掃除します。",     check:['clean the classroom','every day','訳か']},
+    {en:"24. The principal speaks at the assembly.",jp:"校長先生は集会で話します。",      check:['principal','assembly','speaks']},
+    {en:"25. Students listen carefully.",         jp:"生徒たちは注意深く聞きます。",      check:['Students','listen carefully','訳か']}
+  ],
+  // V. 英作文
+  p5:[
+    {jp:"26. あなたの好きな教科を英語で書きなさい。", en:"My favorite subject is English.", tip:"★subject = 教科  S–V–C の形"},
+    {jp:"27. 昼休みに何をしますか？",                 en:"I play soccer at recess.",   tip:"★play soccer at recess = 休み時間にサッカーをする"},
+    {jp:"28. 図書館で何をしますか？",                en:"I read books in the library.",tip:"★read books in the library = 図書館で本を読む"},
+    {jp:"29. 体育館で何をしますか？",                en:"We play basketball in the gym.", tip:"★play basketball in the gym = 体育館でバスケをする"},
+    {jp:"30. 何時に下校しますか？",                  en:"I go home at three thirty.",  tip:"★go home at three thirty = 3時半に帰宅する"}
+  ],
+  // VI. Reading
+  read_tf:[
+    {s:"31. I arrive at school at eight.",   ans:true,  tip:"本文と一致"},
+    {s:"32. I eat lunch at nine o'clock.", ans:false, tip:"本文は noon (12:00) とある"},
+    {s:"33. School ends at three thirty.",ans:true,  tip:"本文と一致"}
+  ],
+  read_mc:{
+    q:"34. Where do you study in the afternoon?",
+    opts:["In the gym","In the library","In the cafeteria","In the classroom"],
+    ans:1, tip:"本文 “I study in the library” と一致"
+  },
+  read_sa:[
+    {q:"35. What time do you arrive at school?", ans:"eight o'clock", tip:"本文と一致"},
+    {q:"36. What is your favorite subject?",      ans:"drawing",       tip:"本文には drawing が趣味とある"}
+  ]
+};
+
+// ── 画面生成 ──
+const $=s=>document.querySelector(s);
+
+// I. Vocabulary Matching
+Data.vocab.forEach((o,i)=>{
+  $('#p1').insertAdjacentHTML('beforeend',
+    `<div class="q" id="q1_${i}">${o.word}<br>`+
+    `<select name="vocab_${i}"><option value="">--</option>`+
+    o.options.map((t,j)=>`<option value="${j}">${String.fromCharCode(65+j)} ${t}</option>`).join('')+
+    `</select><div class="explain"></div></div>`
+  );
+});
+
+// II. Cloze Test
+Data.cloze.forEach((o,i)=>{
+  $('#p2').insertAdjacentHTML('beforeend',
+    `<div class="q" id="q2_${i}">${o.en}<br>`+
+    `<input type="text" name="cloze_${i}"><div class="explain"></div></div>`
+  );
+});
+
+// III. Error Correction
+Data.error.forEach((o,i)=>{
+  $('#p3').insertAdjacentHTML('beforeend',
+    `<div class="q" id="q3_${i}">${o.wrong}<br>`+
+    `<input type="text" name="error_${i}"><div class="explain"></div></div>`
+  );
+});
+
+// IV. 和訳
+Data.p4.forEach((o,i)=>{
+  $('#p4').insertAdjacentHTML('beforeend',
+    `<div class="q">${o.en}<br>`+
+    `<textarea name="p4_${i}"></textarea><br>`+
+    `<button type="button" onclick="this.nextElementSibling.style.display='block'">模範解答・チェック</button>`+
+    `<div class="explain">【模範例】${o.jp}\n<u>チェックリスト</u>\n`+
+      o.check.map(c=>`• ${c}\n`).join('')+
+    `</div></div>`
+  );
+});
+
+// V. 英作文
+Data.p5.forEach((o,i)=>{
+  $('#p5').insertAdjacentHTML('beforeend',
+    `<div class="q">${o.jp}<br>`+
+    `<textarea name="p5_${i}"></textarea><br>`+
+    `<button type="button" onclick="this.nextElementSibling.style.display='block'">模範解答・チェック</button>`+
+    `<div class="explain">${o.tip}</div></div>`
+  );
+});
+
+// VI. Reading TF
+Data.read_tf.forEach((o,i)=>{
+  $('#p6tf').insertAdjacentHTML('beforeend',
+    `<div class="q" id="q6tf_${i}">${o.s}<br>`+
+    `<label><input type="radio" name="tf_${i}" value="T">T</label> `+
+    `<label><input type="radio" name="tf_${i}" value="F">F</label>`+
+    `<div class="explain"></div></div>`
+  );
+});
+
+// VI. Reading MC
+$('#p6mc').innerHTML =
+  `34. ${Data.read_mc.q}<br>`+
+  Data.read_mc.opts.map((w,j)=>
+    `<label class="opt"><input type="radio" name="mc" value="${j}"> ${String.fromCharCode(65+j)} ${w}</label>`
+  ).join('') +
+  `<div class="explain"></div>`;
+
+// VI. Reading SA
+Data.read_sa.forEach((o,i)=>{
+  $('#p6sa').insertAdjacentHTML('beforeend',
+    `<div class="q" id="q6sa_${i}">${o.q}<br>`+
+    `<input type="text" name="sa_${i}"><div class="explain"></div></div>`
+  );
+});
+
+// ── 採点ロジック ──
+document.getElementById('gradeBtn').onclick = function(){
+  let score=0, max=70, bad={};
+
+  // I
+  Data.vocab.forEach((o,i)=>{
+    const r=document.getElementById(`q1_${i}`),
+          sel=r.querySelector(`select[name="vocab_${i}"]`).value,
+          bx=r.querySelector('.explain');
+    if(sel!='' && +sel===o.ans){
+      score+=2; r.classList.add('correct');
+    } else {
+      r.classList.add('wrong');
+      bad['Vocabulary']=(bad['Vocabulary']||0)+1;
+      bx.textContent=`正解：${o.options[o.ans]}`; bx.style.display='block';
+    }
+  });
+
+  // II
+  Data.cloze.forEach((o,i)=>{
+    const r=document.getElementById(`q2_${i}`),
+          val=(r.querySelector(`input[name="cloze_${i}"]`).value||'').trim().toLowerCase(),
+          bx=r.querySelector('.explain');
+    if(val===o.key){
+      score+=2; r.classList.add('correct');
+    } else {
+      r.classList.add('wrong');
+      bad['Cloze']=(bad['Cloze']||0)+1;
+      bx.textContent=`正解：${o.key}`; bx.style.display='block';
+    }
+  });
+
+  // III
+  Data.error.forEach((o,i)=>{
+    const r=document.getElementById(`q3_${i}`),
+          val=r.querySelector(`input[name="error_${i}"]`).value.trim(),
+          bx=r.querySelector('.explain');
+    if(val===o.key){
+      score+=2; r.classList.add('correct');
+    } else {
+      r.classList.add('wrong');
+      bad['ErrorCorrection']=(bad['ErrorCorrection']||0)+1;
+      bx.textContent=`正解：${o.key}`; bx.style.display='block';
+    }
+  });
+
+  // VI: TF
+  Data.read_tf.forEach((o,i)=>{
+    const r=document.getElementById(`q6tf_${i}`),
+          sel=r.querySelector(`input[name="tf_${i}"]:checked`),
+          bx=r.querySelector('.explain');
+    if(sel && ((sel.value==='T')===o.ans)){
+      score+=2; r.classList.add('correct');
+    } else {
+      r.classList.add('wrong');
+      bad['ReadingTF']=(bad['ReadingTF']||0)+1;
+      bx.textContent=`正解：${o.ans?'T':'F'}`; bx.style.display='block';
+    }
+  });
+
+  // VI: MC
+  {
+    const root=document.getElementById('p6mc'),
+          sel=root.querySelector('input[name="mc"]:checked'),
+          bx=root.querySelector('.explain');
+    if(sel && +sel.value===Data.read_mc.ans){
+      score+=4; root.classList.add('correct');
+    } else {
+      root.classList.add('wrong');
+      bad['ReadingMC']=(bad['ReadingMC']||0)+1;
+      bx.textContent=`正解：${Data.read_mc.opts[Data.read_mc.ans]}`; bx.style.display='block';
+    }
+  }
+
+  // VI: SA
+  Data.read_sa.forEach((o,i)=>{
+    const r=document.getElementById(`q6sa_${i}`),
+          val=(r.querySelector(`input[name="sa_${i}"]`).value||'').trim().toLowerCase(),
+          bx=r.querySelector('.explain');
+    if(val===o.ans.toLowerCase()){
+      score+=5; r.classList.add('correct');
+    } else {
+      r.classList.add('wrong');
+      bad['ReadingSA']=(bad['ReadingSA']||0)+1;
+      bx.textContent=`正解：${o.ans}`; bx.style.display='block';
+    }
+  });
+
+  // 結果表示
+  const R=document.getElementById('result');
+  let html=`<h2>自動採点：${score} / ${max} 点</h2>`;
+  if(Object.keys(bad).length){
+    html+='<h3>弱点パート</h3><ul>'+
+      Object.entries(bad).map(([k,v])=>`<li>${k} ×${v}</li>`).join('')+
+      '</ul>';
+  } else {
+    html+='<p>全問正解！おめでとうございます！</p>';
+  }
+  R.innerHTML=html;
+  this.disabled=true;
+};
+</script>
+
+</body>
+</html>
